@@ -1,5 +1,13 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router"; // Import router yang sudah kita buat
+import "./assets/style.css"; // Import global CSS
+// import "./assets/login.css"; // Import login CSS
 
-createApp(App).mount('#app')
+const app = createApp(App);
+
+// Daftarkan router ke instance Vue
+app.use(router);
+
+// Mount aplikasi ke div #app di index.html
+app.mount("#app");

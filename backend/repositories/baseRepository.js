@@ -35,5 +35,19 @@ class BaseRepository {
     }
     return null;
   }
+  // Tambahkan metode ini
+  delete(id) {
+    const db = readDB();
+    const initialLength = db[this.collection].length;
+    db[this.collection] = db[this.collection].filter(
+      (item) => item.id !== parseInt(id),
+    );
+
+    if (db[this.collection].length < initialLength) {
+      writeDB(db);
+      return true;
+    }
+    return false;
+  }
 }
 module.exports = BaseRepository;
