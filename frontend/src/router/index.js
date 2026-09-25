@@ -4,6 +4,9 @@ import UsersView from "../views/UsersView.vue";
 import SiswaView from "../views/SiswaView.vue";
 import BidangLesView from "../views/BidangLesView.vue";
 import ScheduleView from "../views/ScheduleView.vue";
+import JournalGuruView from "../views/JournalGuruView.vue";
+import JournalPimpinanView from "../views/JournalPimpinanView.vue";
+import CetakJadwalView from "../views/CetakJadwalView.vue";
 
 const routes = [
   // Tambahkan redirect dari "/" agar langsung diarahkan ke "/login" atau "/dashboard"
@@ -39,6 +42,21 @@ const routes = [
     path: "/jadwal",
     name: "Jadwal",
     component: ScheduleView,
+  },
+  {
+    path: "/isi-jurnal",
+    name: "Isi Jurnal Mengajar",
+    component: JournalGuruView,
+  },
+  {
+    path: "/periksa-jurnal",
+    name: "Periksa Jurnal",
+    component: JournalPimpinanView,
+  },
+  {
+    path: "/cetak-jadwal",
+    name: "Cetak Jadwal",
+    component: CetakJadwalView,
   },
 ];
 

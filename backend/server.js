@@ -6,6 +6,7 @@ const userRepository = require("./repositories/userRepository");
 const studentRepository = require("./repositories/studentRepository");
 const subjectRepository = require("./repositories/subjectRepository");
 const scheduleRepository = require("./repositories/scheduleRepository");
+const journalRepository = require("./repositories/journalRepository");
 
 const app = express();
 app.use(cors());
@@ -94,6 +95,21 @@ app.put("/api/schedules/:id", (req, res) => {
 });
 app.delete("/api/schedules/:id", (req, res) => {
   const success = scheduleRepository.delete(req.params.id);
+  res.json({ success });
+});
+
+//Journal
+app.get("/api/journals", (req, res) => res.json(journalRepository.getAll()));
+app.post("/api/journals", (req, res) => {
+  const newJournal = journalRepository.create(req.body);
+  res.json(newJournal);
+});
+app.put("/api/journals/:id", (req, res) => {
+  const updated = journalRepository.update(req.params.id, req.body);
+  res.json(updated);
+});
+app.delete("/api/journals/:id", (req, res) => {
+  const success = journalRepository.delete(req.params.id);
   res.json({ success });
 });
 

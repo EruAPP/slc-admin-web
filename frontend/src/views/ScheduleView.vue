@@ -478,7 +478,32 @@ const handleDeleteSchedule = async (id) => {
 };
 
 const printJadwal = () => {
-  window.print();
+  // Buat iframe tersembunyi
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+
+  iframe.src = "/cetak-jadwal";
+  document.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    // Beri jeda singkat agar Vue di dalam iframe selesai memuat data dari API
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+
+      // Hapus iframe setelah dialog cetak selesai/ditutup
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          iframe.remove();
+        }
+      }, 1000);
+    }, 500);
+  };
 };
 
 onMounted(() => {
