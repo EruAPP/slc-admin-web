@@ -18,7 +18,11 @@ class UserRepository extends BaseRepository {
     return { id: doc.id, ...doc.data() };
   }
 
-  async getByRole(role) {
+<<<<<<< HEAD
+  getByRole(role) {
+=======
+  getByRole(role) {
+>>>>>>> d9f43923cef50dcb90c7f0d5fb085e73599a99b4
     return this.getAll().filter((user) => user.role === role);
   }
 }
