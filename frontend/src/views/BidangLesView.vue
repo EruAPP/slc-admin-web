@@ -111,7 +111,7 @@ import MainLayout from "../components/layout/MainLayout.vue";
 const subjects = ref([]);
 const isModalOpen = ref(false);
 const isEditing = ref(false);
-const form = ref({ id: null, name: "", weeklyMinutes: 120 });
+const form = ref({ name: "", weeklyMinutes: 120 });
 
 const fetchSubjects = async () => {
   const res = await api.get("/subjects"); // Sesuaikan baseURL
@@ -124,7 +124,7 @@ const openModal = (subj = null) => {
     form.value = { ...subj };
   } else {
     isEditing.value = false;
-    form.value = { id: null, name: "", weeklyMinutes: 120 };
+    form.value = { name: "", weeklyMinutes: 120 };
   }
   isModalOpen.value = true;
 };

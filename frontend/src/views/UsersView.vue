@@ -46,7 +46,7 @@
                 }}</span>
               </td>
               <td>
-                <template v-if="u.role === 'guru'">
+                <template v-if="['guru', 'pimpinan'].includes(u.role)">
                   <span
                     v-if="!u.subjects || u.subjects.length === 0"
                     style="color: var(--muted)"
@@ -103,6 +103,15 @@
               />
             </div>
             <div class="form-group">
+              <label>Nama Pendek</label>
+              <input
+                type="text"
+                v-model="form.alias"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="form-group">
               <label>Username</label>
               <input
                 type="text"
@@ -129,7 +138,10 @@
                 <option value="pimpinan">Pimpinan</option>
               </select>
             </div>
-            <div class="form-group" v-if="form.role === 'guru'">
+            <div
+              class="form-group"
+              v-if="['guru', 'pimpinan'].includes(form.role)"
+            >
               <label>Bidang Les yang Diajar (Khusus Guru)</label>
               <div class="checkbox-grid">
                 <span
@@ -170,6 +182,7 @@ import { ref, onMounted } from "vue";
 import api from "../services/api.js";
 import MainLayout from "../components/layout/MainLayout.vue";
 import { getCurrentUser } from "../services/authService";
+import CryptoJs from "crypto-js";
 
 const currentUser = getCurrentUser();
 const users = ref([]);
@@ -178,8 +191,8 @@ const isModalOpen = ref(false);
 const isEditing = ref(false);
 
 const form = ref({
-  id: null,
   name: "",
+  alias: "",
   username: "",
   password: "",
   role: "guru",
@@ -224,8 +237,8 @@ const openModal = (u = null) => {
   } else {
     isEditing.value = false;
     form.value = {
-      id: null,
       name: "",
+      alias: "",
       username: "",
       password: "",
       role: "guru",
@@ -241,15 +254,27 @@ const closeModal = () => {
 
 const saveUser = async () => {
   // Pastikan subjects kosong jika role bukan guru
-  if (form.value.role !== "guru") {
+  if (!["guru", "pimpinan"].includes(form.value.role)) {
     form.value.subjects = [];
   }
 
+  const payload = { ...form.value };
+
   try {
     if (isEditing.value) {
-      await api.put(`/api/users/${form.value.id}`, form.value);
+      if (payload.password && payload.password.trim() !== "") {
+        payload.password = CryptoJs.SHA256(payload.password).toString();
+      } else {
+        delete payload.password;
+      }
+
+      await api.put(`/users/${payload.id}`, payload);
     } else {
-      await api.post("/api/users", form.value);
+      if (payload.password) {
+        payload.password = CryptoJs.SHA256(payload.password).toString();
+      }
+
+      await api.post("/users", payload);
     }
     closeModal();
     fetchData();
@@ -269,7 +294,7 @@ const deleteUser = async (id) => {
 
   if (confirm("Apakah Anda yakin ingin menghapus user ini?")) {
     try {
-      await api.delete(`/api/users/${id}`);
+      await api.delete(`/users/${id}`);
       fetchData();
     } catch (error) {
       console.error("Gagal menghapus user:", error);

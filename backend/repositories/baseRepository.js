@@ -1,53 +1,56 @@
-const fs = require("fs");
-const path = require("path");
-const dbPath = path.join(__dirname, "../database.json");
-
-const readDB = () => JSON.parse(fs.readFileSync(dbPath, "utf8"));
-const writeDB = (data) =>
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+const db = require("../firebase");
 
 class BaseRepository {
   constructor(collectionName) {
-    this.collection = collectionName;
+    this.collection = db.collection(collectionName);
   }
-  getAll() {
-    return readDB()[this.collection];
-  }
-  getById(id) {
-    return this.getAll().find((item) => item.id === parseInt(id));
-  }
-  create(data) {
-    const db = readDB();
-    const newItem = { id: Date.now(), ...data };
-    db[this.collection].push(newItem);
-    writeDB(db);
-    return newItem;
-  }
-  update(id, data) {
-    const db = readDB();
-    const index = db[this.collection].findIndex(
-      (item) => item.id === parseInt(id),
-    );
-    if (index !== -1) {
-      db[this.collection][index] = { ...db[this.collection][index], ...data };
-      writeDB(db);
-      return db[this.collection][index];
-    }
-    return null;
-  }
-  // Tambahkan metode ini
-  delete(id) {
-    const db = readDB();
-    const initialLength = db[this.collection].length;
-    db[this.collection] = db[this.collection].filter(
-      (item) => item.id !== parseInt(id),
-    );
 
-    if (db[this.collection].length < initialLength) {
-      writeDB(db);
-      return true;
-    }
-    return false;
+  async getAll() {
+    const snapshot = await this.collection.get();
+    if (snapshot.empty) return [];
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  }
+
+  async getById(id) {
+    const doc = await this.collection.doc(String(id)).get();
+    if (!doc.exists) return null;
+
+    return { id: doc.id, ...doc.data() };
+  }
+
+  async create(data) {
+    // Menggunakan Auto-Generated ID bawaan Firestore
+    const docRef = await this.collection.add(data);
+    const doc = await docRef.get();
+
+    return { id: doc.id, ...doc.data() };
+  }
+
+  async update(id, data) {
+    const docRef = this.collection.doc(String(id));
+    const doc = await docRef.get();
+
+    if (!doc.exists) return null;
+
+    await docRef.update(data);
+    const updatedDoc = await docRef.get();
+
+    return { id: updatedDoc.id, ...updatedDoc.data() };
+  }
+
+  async delete(id) {
+    const docRef = this.collection.doc(String(id));
+    const doc = await docRef.get();
+
+    if (!doc.exists) return false;
+
+    await docRef.delete();
+    return true;
   }
 }
+
 module.exports = BaseRepository;

@@ -36,7 +36,7 @@
             <thead>
               <tr>
                 <th style="width: 80px">Jam</th>
-                <th v-for="t in teachers" :key="t.id">{{ t.name }}</th>
+                <th v-for="t in teachers" :key="t.id">{{ t.alias }}</th>
               </tr>
             </thead>
             <tbody>

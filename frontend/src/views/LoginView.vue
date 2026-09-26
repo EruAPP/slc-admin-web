@@ -35,11 +35,11 @@ const passwordError = computed(() => {
 });
 
 const onSubmit = async (e) => {
-  e.preventDefault();
+  if (e) e.preventDefault();
   error.value = "";
 
   if (!form.value.username || usernameError.value) {
-    error.value = usernameError.value || "Please enter a valid email address.";
+    error.value = usernameError.value || "Please enter a valid username.";
     return;
   }
 
@@ -51,7 +51,8 @@ const onSubmit = async (e) => {
 
   isLoading.value = true;
   try {
-    const res = await login(username.value, password.value);
+    const res = await login(form.value.username, form.value.password);
+
     if (res.success) {
       router.push("/dashboard");
     } else {

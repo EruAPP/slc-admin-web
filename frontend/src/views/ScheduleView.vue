@@ -38,7 +38,7 @@
             <tr>
               <th class="time-col">Jam</th>
               <th v-if="teachers.length === 0">Tidak ada Guru / Pimpinan</th>
-              <th v-for="t in teachers" :key="t.id">{{ t.name }}</th>
+              <th v-for="t in teachers" :key="t.id">{{ t.alias }}</th>
             </tr>
           </thead>
           <tbody>
@@ -162,7 +162,7 @@
                     :key="t.id"
                     :value="t.id"
                   >
-                    {{ t.name }}
+                    {{ t.alias }}
                   </option>
                 </select>
               </div>

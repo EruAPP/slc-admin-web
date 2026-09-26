@@ -6,8 +6,16 @@ class UserRepository extends BaseRepository {
   }
 
   // Helper khusus untuk User
-  findByUsername(username) {
-    return this.getAll().find((user) => user.username === username);
+  async findByUsername(username) {
+    const snapshot = await this.collection
+      .where("username", "==", username)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) return null;
+
+    const doc = snapshot.docs[0];
+    return { id: doc.id, ...doc.data() };
   }
 
   getByRole(role) {
