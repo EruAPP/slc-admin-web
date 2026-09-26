@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "password123",
+      "name": "Administrator",
+      "role": "admin",
+      "subjects": []
+    },
+    {
+      "id": 2,
+      "username": "pimpinan",
+      "password": "password123",
+      "name": "Bapak Pimpinan",
+      "role": "pimpinan",
+      "subjects": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 3,
+      "username": "guru1",
+      "password": "password123",
+      "name": "Guru Satu",
+      "role": "guru",
+      "subjects": [
+        1
+      ]
+    }
+  ],
+  "students": [],
+  "subjects": [
+    {
+      "id": null,
+      "name": "Math",
+      "weeklyMinutes": 120
+    }
+  ],
+  "schedules": [],
+  "journals": []
+}
